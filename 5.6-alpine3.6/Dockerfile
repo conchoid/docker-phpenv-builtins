@@ -1,5 +1,4 @@
-# TODO: Use docker-phpenv image
-FROM base
+FROM conchoid/docker-phpenv
 
 ENV PREINSTALLED_VERSIONS "\
 5.3.29\n\
