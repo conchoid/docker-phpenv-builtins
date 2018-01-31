@@ -12,8 +12,7 @@ ENV PREINSTALLED_VERSIONS "\
 RUN set -x \
     && echo -e "$PREINSTALLED_VERSIONS" | while read version;do \
         export CFLAGS="" \
-        if [[ "$version" == "5.3."* ]];then \
-            export CFLAGS="-lssl -lcrypto" \
-        fi \
-        phpenv install $version; done \
+        && if [[ "$version" == "5.3."* ]];then \
+            export CFLAGS="-lssl -lcrypto"; fi \
+        && phpenv install $version; done \
     && rm -rf "/tmp/php-build*"
