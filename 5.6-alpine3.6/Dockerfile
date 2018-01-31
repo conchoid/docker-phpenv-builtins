@@ -1,4 +1,4 @@
-FROM conchoid/docker-phpenv
+FROM conchoid/docker-phpenv:v1-1-5.6-alpine3.6
 
 ENV PREINSTALLED_VERSIONS "\
 5.3.29\n\
