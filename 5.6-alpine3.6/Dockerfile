@@ -10,6 +10,8 @@ ENV PREINSTALLED_VERSIONS "\
 7.2.1"
 
 RUN set -x \
+    && export CONFIGURE_OPTS="$PHP_CONFIGURE_OPTS" \
+    && export CFLAGS="$PHP_CFLAGS" \
     && echo -e "$PREINSTALLED_VERSIONS" | while read version;do \
          phpenv install $version; done \
     && rm -rf "/tmp/php-build*"
