@@ -1,5 +1,6 @@
 FROM conchoid/docker-phpenv:v1-1-5.6-alpine3.6
 
+ENV PHP_CONFIGURE_OPTS "--disable-fpm --disable-cgi"
 ENV PREINSTALLED_VERSIONS "\
 5.3.29\n\
 5.4.45\n\
