@@ -23,5 +23,9 @@ RUN set -x \
     && export CFLAGS="${PHP_CFLAGS}" \
     && echo -e "${PREINSTALLED_VERSIONS}" | while read version;do \
         if [ ! -e "${PHPENV_ROOT}/versions/${version}" ];then \
-            phpenv install $version;fi;done \
-    && rm -rf "/tmp/php-build*"
+            phpenv install $version \
+            && phpenv global $version \
+            # Add the timezone settings to php.ini to avoid date function wargnings.
+            && php --ini | grep 'Loaded Configuration File' | awk -F':' '{ print $2 }' | xargs -i /bin/sh -c 'echo -e "[Date]\ndate.timezone = America/New_York" >> {}';fi;done \
+    && rm -rf "/tmp/php-build*" \
+    && phpenv global system
