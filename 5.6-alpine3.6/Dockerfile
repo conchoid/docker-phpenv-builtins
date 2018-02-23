@@ -26,6 +26,6 @@ RUN set -x \
             phpenv install $version \
             && phpenv global $version \
             # Add the timezone settings to php.ini to avoid date function wargnings.
-            && php --ini | grep 'Loaded Configuration File' | awk -F':' '{ print $2 }' | xargs -i /bin/sh -c 'echo -e "[Date]\ndate.timezone = America/New_York" >> {}';fi;done \
+            && php --ini | grep 'Loaded Configuration File' | awk -F':' '{ print $2 }' | xargs -i /bin/sh -c 'echo -e "[Date]\ndate.timezone = UTC" >> {}';fi;done \
     && rm -rf "/tmp/php-build*" \
     && phpenv global system
