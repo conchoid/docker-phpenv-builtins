@@ -1,18 +1,18 @@
-FROM conchoid/docker-phpenv:v1-9-5.6-stretch 
+FROM conchoid/docker-phpenv:v1-10-5.6-stretch 
 
 ENV PHP_CONFIGURE_OPTS "--disable-fpm --disable-cgi"
 ENV PREINSTALLED_VERSIONS "\
 5.3.29\n\
 5.4.45\n\
 5.5.38\n\
-5.6.37\n\
+5.6.38\n\
 7.0.28\n\
 7.1.15\n\
 7.2.3"
 
 RUN set -x \
     && phpenv global system \
-    && system_php_ver="5.6.37" \
+    && system_php_ver=$(php -v | head -1 | sed -e "s/^PHP \([0-9.]*\).*$/\1/") \
     && version_bin_dir="${PHPENV_ROOT}/versions/${system_php_ver}/bin" \
     && mkdir -p "${version_bin_dir}" \
     && cp "$(phpenv which php)" "${version_bin_dir}" \
