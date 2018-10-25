@@ -10,8 +10,7 @@ ENV PREINSTALLED_VERSIONS "\
 7.1.15\n\
 7.2.3"
 
-RUN set -x \
-    && phpenv global system \
+RUN phpenv global system \
     && system_php_ver=$(php -v | head -1 | sed -e "s/^PHP \([0-9.]*\).*$/\1/") \
     && version_bin_dir="${PHPENV_ROOT}/versions/${system_php_ver}/bin" \
     && mkdir -p "${version_bin_dir}" \
@@ -26,6 +25,10 @@ RUN set -x \
             phpenv install $version \
             && phpenv global $version \
             # Add the timezone settings to php.ini to avoid date function wargnings.
-            && php --ini | grep 'Loaded Configuration File' | awk -F':' '{ print $2 }' | xargs -i /bin/sh -c 'echo -e "[Date]\ndate.timezone = UTC" >> {}';fi;done \
+            && php --ini | grep 'Loaded Configuration File' | awk -F':' '{ print $2 }' | xargs -i /bin/sh -c 'echo "[Date]\ndate.timezone = UTC" >> {}' \
+            # validate php.ini
+            && [ $(php --ini 2>&1 >/dev/null | wc -l) = "0" ] || exit 1 \
+        ;fi \
+    ; done \
     && rm -rf "/tmp/php-build*" \
     && phpenv global system
