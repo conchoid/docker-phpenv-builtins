@@ -1,34 +1,12 @@
-FROM conchoid/docker-phpenv:v1-10-5.6-stretch 
+FROM conchoid/docker-phpenv-builtins:v1-12-5x-stretch AS php5
+FROM conchoid/docker-phpenv-builtins:v1-12-7x-stretch AS php7
+FROM conchoid/docker-phpenv:v1-12-5.6-stretch 
+
 
 ENV PHP_CONFIGURE_OPTS "--disable-fpm --disable-cgi"
-ENV PREINSTALLED_VERSIONS "\
-5.3.29\n\
-5.4.45\n\
-5.5.38\n\
-5.6.38\n\
-7.0.28\n\
-7.1.15\n\
-7.2.3"
+ENV PHP_AUTOCONF /usr/bin/autoconf2.59
 
-RUN phpenv global system \
-    && system_php_ver=$(php -v | head -1 | sed -e "s/^PHP \([0-9.]*\).*$/\1/") \
-    && version_bin_dir="${PHPENV_ROOT}/versions/${system_php_ver}/bin" \
-    && mkdir -p "${version_bin_dir}" \
-    && cp "$(phpenv which php)" "${version_bin_dir}" \
-    && cp "$(phpenv which php-config)" "${version_bin_dir}" \
-    && cp "$(phpenv which phar)" "${version_bin_dir}" \
-    && cp "$(phpenv which phar.phar)" "${version_bin_dir}" \
-    && export CONFIGURE_OPTS="${PHP_CONFIGURE_OPTS}" \
-    && export CFLAGS="${PHP_CFLAGS}" \
-    && echo "${PREINSTALLED_VERSIONS}" | while read version;do \
-        if [ ! -e "${PHPENV_ROOT}/versions/${version}" ];then \
-            phpenv install $version \
-            && phpenv global $version \
-            # Add the timezone settings to php.ini to avoid date function wargnings.
-            && php --ini | grep 'Loaded Configuration File' | awk -F':' '{ print $2 }' | xargs -i /bin/sh -c 'echo "[Date]\ndate.timezone = UTC" >> {}' \
-            # validate php.ini
-            && [ $(php --ini 2>&1 >/dev/null | wc -l) = "0" ] || exit 1 \
-        ;fi \
-    ; done \
-    && rm -rf "/tmp/php-build*" \
-    && phpenv global system
+COPY --from=php5 ${PHPENV_ROOT}/versions/ ${PHPENV_ROOT}/versions/
+COPY --from=php7 ${PHPENV_ROOT}/versions/ ${PHPENV_ROOT}/versions/
+
+RUN phpenv rehash && phpenv global system && phpenv versions
