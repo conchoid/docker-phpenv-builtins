@@ -7,9 +7,9 @@ ENV PHP_AUTOCONF /usr/bin/autoconf
 # https://www.php.net/supported-versions.php
 ENV PREINSTALLED_VERSIONS "\
 7.1.33\n\
-7.2.26\n\
-7.3.13\n\
-7.4.1"
+7.2.27\n\
+7.3.14\n\
+7.4.2"
 
 RUN phpenv global system \
     && system_php_ver=$(php -v | head -1 | sed -e "s/^PHP \([0-9.]*\).*$/\1/") \
